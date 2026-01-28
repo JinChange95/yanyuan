@@ -162,29 +162,32 @@ graph TB
 ### 用户表 (users)
 ```sql
 CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
-  role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'actor', 'requester')),
+  role ENUM('admin', 'actor', 'requester') NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_email (email),
+  INDEX idx_username (username)
 );
 ```
 
 ### 演员表 (actors)
 ```sql
 CREATE TABLE actors (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id),
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
   name VARCHAR(100) NOT NULL,
-  gender VARCHAR(10) NOT NULL CHECK (gender IN ('male', 'female')),
-  age INTEGER NOT NULL CHECK (age >= 0),
+  gender ENUM('male', 'female') NOT NULL,
+  age INT NOT NULL,
   photo_url VARCHAR(500),
   bio TEXT,
   experience TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
   INDEX idx_gender (gender),
   INDEX idx_age (age)
 );
@@ -193,15 +196,16 @@ CREATE TABLE actors (
 ### 新闻表 (news)
 ```sql
 CREATE TABLE news (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(200) NOT NULL,
   content TEXT NOT NULL,
   summary VARCHAR(500),
   cover_image_url VARCHAR(500),
-  author_id UUID REFERENCES users(id),
+  author_id INT,
   published_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL,
   INDEX idx_published_at (published_at)
 );
 ```
@@ -209,27 +213,30 @@ CREATE TABLE news (
 ### 需求表 (requirements)
 ```sql
 CREATE TABLE requirements (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id INT AUTO_INCREMENT PRIMARY KEY,
   project_name VARCHAR(200) NOT NULL,
-  actor_count INTEGER NOT NULL CHECK (actor_count > 0),
-  gender VARCHAR(10) CHECK (gender IN ('male', 'female', 'any')),
-  age_group VARCHAR(20) CHECK (age_group IN ('under12', '12-20', '30-50', 'over50', 'any')),
+  actor_count INT NOT NULL,
+  gender ENUM('male', 'female', 'any') DEFAULT 'any',
+  age_group ENUM('under12', '12-20', '30-50', 'over50', 'any') DEFAULT 'any',
   contact_info VARCHAR(200) NOT NULL,
-  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'contacted', 'completed')),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  status ENUM('pending', 'contacted', 'completed') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_status (status)
 );
 ```
 
 ### 海报表 (posters)
 ```sql
 CREATE TABLE posters (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(100),
   image_url VARCHAR(500) NOT NULL,
   link_url VARCHAR(500),
-  display_order INTEGER DEFAULT 0,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  display_order INT DEFAULT 0,
+  is_active TINYINT(1) DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_is_active (is_active),
+  INDEX idx_display_order (display_order)
 );
 ```
 
@@ -312,17 +319,19 @@ CREATE TABLE posters (
 - **HTTP客户端**: Axios
 
 ### 后端技术栈
-- **框架**: Node.js (Express) 或 Python (FastAPI)
-- **数据库**: PostgreSQL
-- **ORM**: Prisma 或 SQLAlchemy
-- **认证**: JWT
+- **框架**: PHP (Laravel 框架)
+- **数据库**: MySQL 8.0+
+- **ORM**: Laravel Eloquent ORM
+- **认证**: Laravel Sanctum 或 JWT
 - **文件存储**: 本地存储或云存储（如阿里云OSS）
+- **邮件服务**: Laravel Mail
 
 ### 部署方案
 - **前端**: 静态文件托管（如Nginx）
-- **后端**: Node.js 或 Python 服务
-- **数据库**: PostgreSQL 实例
+- **后端**: PHP-FPM + Nginx
+- **数据库**: MySQL 数据库
 - **反向代理**: Nginx
+- **PHP版本**: 8.1+
 
 ## 开发优先级
 
@@ -351,4 +360,5 @@ CREATE TABLE posters (
 [2] INCOSE Systems Engineering Handbook - 需求质量标准
 [3] React Documentation - https://react.dev/
 [4] Vue.js Documentation - https://vuejs.org/
-[5] PostgreSQL Documentation - https://www.postgresql.org/docs/
+[5] Laravel Documentation - https://laravel.com/docs
+[6] MySQL Documentation - https://dev.mysql.com/doc/

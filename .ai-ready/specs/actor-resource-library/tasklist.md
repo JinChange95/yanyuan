@@ -7,8 +7,8 @@
 ## 技术栈
 
 - 前端：React + Ant Design
-- 后端：Node.js + Express
-- 数据库：PostgreSQL
+- 后端：PHP (Laravel) + PHP-FPM
+- 数据库：MySQL 8.0+
 - 部署：Nginx
 
 ## 任务列表
@@ -17,9 +17,9 @@
 
 - [ ] 初始化前端项目（React + Vite）
 - [ ] 配置 Ant Design 主题（橘色）
-- [ ] 初始化后端项目（Node.js + Express）
-- [ ] 配置 PostgreSQL 数据库
-- [ ] 配置开发环境和构建工具
+- [ ] 初始化后端项目（Laravel）
+- [ ] 配置 MySQL 数据库
+- [ ] 配置 Laravel 环境和依赖
 - [ ] 设置项目目录结构
 
 ### 第二阶段：数据库设计
@@ -34,33 +34,37 @@
 
 ### 第三阶段：后端 API 开发
 
-- [ ] 实现用户认证模块（JWT）
+- [ ] 实现用户认证模块（Laravel Sanctum/JWT）
 - [ ] 实现 POST /api/auth/login
 - [ ] 实现 POST /api/auth/register
 - [ ] 实现 GET /api/auth/me
+- [ ] 创建演员 Model 和 Migration
 - [ ] 实现演员服务 API
   - [ ] GET /api/actors（支持筛选和分页）
   - [ ] GET /api/actors/{id}
   - [ ] POST /api/actors
   - [ ] PUT /api/actors/{id}
   - [ ] DELETE /api/actors/{id}
+- [ ] 创建新闻 Model 和 Migration
 - [ ] 实现新闻服务 API
   - [ ] GET /api/news
   - [ ] GET /api/news/{id}
   - [ ] POST /api/news
   - [ ] PUT /api/news/{id}
   - [ ] DELETE /api/news/{id}
+- [ ] 创建需求 Model 和 Migration
 - [ ] 实现需求服务 API
   - [ ] GET /api/requirements
   - [ ] POST /api/requirements
   - [ ] DELETE /api/requirements/{id}
-- [ ] 实现文件上传接口 POST /api/upload
+- [ ] 实现文件上传（Laravel Storage）
+- [ ] 创建海报 Model 和 Migration
 - [ ] 实现海报服务 API
   - [ ] GET /api/posters
   - [ ] POST /api/posters
   - [ ] PUT /api/posters/{id}
   - [ ] DELETE /api/posters/{id}
-- [ ] 实现邮件发送功能
+- [ ] 实现 Laravel Mail 邮件发送
 
 ### 第四阶段：前端页面开发
 
@@ -122,14 +126,15 @@
 
 ### 第七阶段：部署
 
-- [ ] 配置生产环境
-- [ ] 设置数据库
-- [ ] 部署后端服务
+- [ ] 配置生产环境（PHP 8.1+）
+- [ ] 设置 MySQL 数据库
+- [ ] 配置 PHP-FPM 和 Nginx
+- [ ] 部署 Laravel 应用
 - [ ] 部署前端静态文件
 - [ ] 配置 Nginx 反向代理
 - [ ] 配置 SSL 证书
-- [ ] 设置文件存储
-- [ ] 配置邮件服务
+- [ ] 配置文件存储
+- [ ] 配置邮件服务（Laravel Mail）
 - [ ] 进行生产环境测试
 
 ### 第八阶段：文档和优化
